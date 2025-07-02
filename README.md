@@ -33,7 +33,25 @@ su - ansible
 
 Now you're in the Ansible control node as the `ansible` user.
 
+### 5. Set Up SSH Keys for Passwordless Access to Managed Nodes
 
+Run the following commands inside the control node to generate SSH keys and copy them to the managed nodes:
+
+```bash
+# Generate SSH key pair (accept defaults)
+ssh-keygen -t rsa -b 2048
+
+# Copy public key to the managed nodes to enable passwordless SSH
+sshpass -p "ansible" ssh-copy-id -o StrictHostKeyChecking=no ansible@ubuntu-node
+sshpass -p "ansible" ssh-copy-id -o StrictHostKeyChecking=no ansible@centos-node
+
+# Test SSH access to each node (should not prompt for password)
+ssh ansible@ubuntu-node
+ssh ansible@centos-node
+```
+This will allow the control node to connect to managed nodes without password prompts, which is required for smooth Ansible automation.
+
+Note that you can also just add `ansible_ssh_pass=ansible` directly in the `./volumes/control/inventory.ini` file to provide the SSH password but let’s not lose good security habits just because this is a sandbox environment.
 ## Example Inventory
 
 The folder `./volumes/control` is mapped to `/home/ansible` inside the container. 
@@ -67,7 +85,7 @@ docker-compose down
 * SSH is configured to run in each container (`CMD ["/usr/sbin/sshd", "-D"]`).
 * `/home/ansible` in the control container is mapped to `./volumes/control` for persistence and easy editing.
 * You can modify the Dockerfiles to include additional tools or customize users.
-
+* Passwords are not stored in the `inventory.ini` file for security reasons. The containers include user accounts with preset passwords configured at build time. The Ansible control node connects to target containers via SSH using these accounts, and password authentication is handled separately (e.g., via `sshpass` or SSH keys)
 
 
 ##  Resources
