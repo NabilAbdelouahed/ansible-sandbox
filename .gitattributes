@@ -1,2 +1,3 @@
 Dockerfile linguist-language=Dockerfile
 *.dockerfile linguist-language=Dockerfile
+Dockerfile* linguist-language=Dockerfile
