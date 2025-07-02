@@ -1,0 +1,21 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && apt install -y \
+    openssh-client \
+    ansible \
+    sshpass \
+    iputils-ping \
+    nano \
+    vim \
+    net-tools \
+    python3
+
+# Create a user
+RUN useradd -ms /bin/bash ansible && \
+    echo 'ansible:ansible' | chpasswd && \
+    echo 'ansible ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER ansible
+WORKDIR /home/ansible
