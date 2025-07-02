@@ -19,3 +19,7 @@ RUN useradd -ms /bin/bash ansible && \
 
 USER ansible
 WORKDIR /home/ansible
+
+COPY files/ /home/ansible/
+
+CMD ["tail", "-f", "/dev/null"]

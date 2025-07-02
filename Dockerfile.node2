@@ -9,4 +9,6 @@ RUN mkdir /var/run/sshd
 
 EXPOSE 22
 
+RUN ssh-keygen -A
+
 CMD ["/usr/sbin/sshd", "-D"]
