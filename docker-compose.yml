@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  control:
+    build: 
+      context: .
+      dockerfile: Dockerfile.control
+    container_name: control
+    hostname: control
+    volumes:
+      - ./volumes/control:/home/ansible
+    networks:
+      ansible-net:
+        ipv4_address: 172.20.0.10
+
+  ubuntu-node:
+    build: 
+      context: .
+      dockerfile: Dockerfile.node1
+    container_name: ubuntu-node
+    hostname: ubuntu-node
+    networks:
+      ansible-net:
+        ipv4_address: 172.20.0.11
+
+  centos-node:
+    build: 
+      context: .
+      dockerfile: Dockerfile.node2
+    container_name: centos-node
+    hostname: centos-node
+    networks:
+      ansible-net:
+        ipv4_address: 172.20.0.12
+
+networks:
+  ansible-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
